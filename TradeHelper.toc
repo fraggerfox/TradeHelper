@@ -1,0 +1,5 @@
+## Interface: 30300
+## Title: Trade Helper
+## Notes: An addon that helps in doing trade / buy / sell of items
+TradeHelper.lua
+TradeHelper.xml
