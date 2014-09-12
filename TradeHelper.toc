@@ -1,5 +1,10 @@
 ## Interface: 30300
 ## Title: Trade Helper
+## Author: fraggerfox
+## Version: 0.01
 ## Notes: An addon that helps in doing trade / buy / sell of items
+## eMail: santhosh.raju@gmail.com
+## DefaultState: Disabled
+## LoadOnDemand: 0
 TradeHelper.lua
 TradeHelper.xml
