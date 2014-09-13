@@ -6,6 +6,10 @@
 -- Dropdown Box - http://wowprogramming.com/snippets/Create_UI-styled_dropdown_menu_10
 -- ComboPoints (Most of the coding style has been taken from here) - http://www.curse.com/addons/wow/cbp 
 
+local TradeHelper = CreateFrame("frame")
+
+
+
 --Variables
 
 local scale = 1
@@ -26,9 +30,17 @@ local quantityTypes = {
 --Events
 
 --
+-- Initialize the frame to accept events
+--
+TradeHelper:SetScript("OnEvent", function(self, event, ...)
+	self[event](self, ...)
+end)
+
+--
 -- Initializes the slash commands
 --
-function TradeHelper_OnLoad()
+function TradeHelper:ADDON_LOADED(addon)
+	if addon ~= "TradeHelper" then return end
 	SlashCmdList["TRADEHELPER"] = TradeHelper_Init;
 	
 	SLASH_TRADEHELPER1 = "/th"; -- an alias to /hwshow
@@ -36,6 +48,9 @@ function TradeHelper_OnLoad()
 	
 	DEFAULT_CHAT_FRAME:AddMessage("|r:"..colorhex("#FF0000").."Trade Helper v0.0 |r Loaded");
 end
+
+
+TradeHelper:RegisterEvent("ADDON_LOADED")
 
 --
 -- Initializates the TradeHelper Addon
@@ -54,14 +69,14 @@ function TradeHelper_Init(args)
 		TradeHelper_SlashHelp();
 	end
 	  
-  -- Initialize the Tooltip Information Capture
-  TradeHelper_InitItemCapture();
-  
-  -- Sets the backdrop to be transparent
-  HelloWorldForm:SetBackdrop(StaticPopup1:GetBackdrop())
-  
-  --- Initialize the trade chat watcher
-  TradeHelper_TradeChatWatcher()
+	-- Initialize the Tooltip Information Capture
+	TradeHelper_InitItemCapture();
+	
+	-- Sets the backdrop to be transparent
+	HelloWorldForm:SetBackdrop(StaticPopup1:GetBackdrop())
+	
+	--- Initialize the trade chat watcher
+	TradeHelper_TradeChatWatcher()
 end
 
 --
@@ -110,7 +125,7 @@ end
 -- 2. Table to store and retrieve Data after logging off
 -- 3. Implement basic trading logic (yet to be split into micro tasks)
 --
-local function TradeHelper_GenerateButton(itemIcon, itemID) 
+function TradeHelper_GenerateButton(itemIcon, itemID) 
 	if itemList[itemID] == true then
 		return;
 	end
@@ -172,7 +187,7 @@ end
 -- Callback for whenever the drop down changes
 --
 function TradeHelper_DropdownBoxOnClick(self, frame)
-  UIDropDownMenu_SetSelectedID(frame, self:GetID())
+	UIDropDownMenu_SetSelectedID(frame, self:GetID())
 end
 
 --
@@ -213,11 +228,11 @@ function TradeHelper_AdvertiseItems(itemList)
 		TradeHelper_AdvertiseItem(itemID, _G[editBox]:GetNumber(), UIDropDownMenu_GetSelectedID(_G[dropdownBox]))
 	end
 	
-  if (timerFrame == nil) then
-  	timerFrame = CreateFrame("frame")
-  	advertiseInterval = 5.0;
-  	timerFrame:SetScript("OnUpdate", function(self,elapsed) TradeHelper_AdvertiseItemsPeriodic(self,elapsed,itemList) end)
-  end
+	if (timerFrame == nil) then
+		timerFrame = CreateFrame("frame")
+		advertiseInterval = 5.0;
+		timerFrame:SetScript("OnUpdate", function(self,elapsed) TradeHelper_AdvertiseItemsPeriodic(self,elapsed,itemList) end)
+	end
 end
 
 --
@@ -298,8 +313,11 @@ function colorhex(hex)
 	if(string.sub(hex, 1,1) == "#") then
 		hex = string.sub(hex, 2);
 	end
+	
 	local col = "|c00"..hex;
 	return col;	
 end
 
 --/Private Functions
+
+
